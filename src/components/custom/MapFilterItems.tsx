@@ -7,7 +7,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { categoryItems } from "@/lib/categoryItems";
-
+import { Suspense } from 'react'
 export function MapFilterItems() {
   const searchParams = useSearchParams();
   const search = searchParams.get("filter");
@@ -26,7 +26,9 @@ export function MapFilterItems() {
   );
 
   return (
+   
     <div className="flex gap-x-10 mt-5 w-full overflow-x-scroll no-scrollbar">
+       <Suspense>
       {categoryItems.map((item) => (
         <Link
           key={item.id}
@@ -53,6 +55,7 @@ export function MapFilterItems() {
           <p className="text-xs font-medium">{item.title}</p>
         </Link>
       ))}
+      </Suspense>
     </div>
   );
 }
