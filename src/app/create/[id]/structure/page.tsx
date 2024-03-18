@@ -1,6 +1,5 @@
 import { createCategoryPage } from "@/app/actions";
 
-
 import { CreatioBottomBar } from "@/components/custom/CreationBottomBar";
 import { SelctetCategory } from "@/components/custom/SelectedCategory";
 

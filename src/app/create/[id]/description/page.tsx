@@ -1,5 +1,5 @@
 import { CreateDescription } from "@/app/actions";
-// import { Counter } from "@/app/components/Counter";
+import { Counter } from "@/components/custom/Counter";
 import { CreatioBottomBar } from "@/components/custom/CreationBottomBar";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -66,7 +66,7 @@ export default function DescriptionPage({
                   </p>
                 </div>
 
-                {/* <Counter name="guest" /> */}
+                <Counter name="guest" />
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
@@ -76,7 +76,7 @@ export default function DescriptionPage({
                   </p>
                 </div>
 
-                {/* <Counter name="room" /> */}
+                <Counter name="room" />
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
@@ -86,7 +86,7 @@ export default function DescriptionPage({
                   </p>
                 </div>
 
-                {/* <Counter name="bathroom" /> */}
+                <Counter name="bathroom" />
               </div>
             </CardHeader>
           </Card>

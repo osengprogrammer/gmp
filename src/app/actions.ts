@@ -5,6 +5,7 @@ import prisma from "@/lib/db";
 // import { supabase } from "./lib/supabase";
 import { revalidatePath } from "next/cache";
 import path from "path";
+import { supabase } from "@/lib/supabase";
 
 export async function createAirbnbHome({ userId }: { userId: string }) {
   // console.log(userId, "oka")
@@ -81,12 +82,12 @@ export async function CreateDescription(formData: FormData) {
   const roomNumber = formData.get("room") as string;
   const bathroomsNumber = formData.get("bathroom") as string;
 
-  // const { data: imageData } = await supabase.storage
-  //   .from("images")
-  //   .upload(`${imageFile.name}-${new Date()}`, imageFile, {
-  //     cacheControl: "2592000",
-  //     contentType: "image/png",
-  //   });
+  const { data: imageData } = await supabase.storage
+    .from("images")
+    .upload(`${imageFile.name}-${new Date()}`, imageFile, {
+      cacheControl: "2592000",
+      contentType: "image/png",
+    });
 
   const data = await prisma.home.update({
     where: {
@@ -99,29 +100,30 @@ export async function CreateDescription(formData: FormData) {
       bedrooms: roomNumber,
       bathrooms: bathroomsNumber,
       guests: guestNumber,
-      // photo: imageData?.path,
+      photo: imageData?.path,
       addedDescription: true,
     },
   });
 
+  console.log(data)
   return redirect(`/create/${homeId}/address`);
 }
 
-// export async function createLocation(formData: FormData) {
-//   const homeId = formData.get("homeId") as string;
-//   const countryValue = formData.get("countryValue") as string;
-//   const data = await prisma.home.update({
-//     where: {
-//       id: homeId,
-//     },
-//     data: {
-//       addedLoaction: true,
-//       country: countryValue,
-//     },
-//   });
+export async function createLocation(formData: FormData) {
+  const homeId = formData.get("homeId") as string;
+  const countryValue = formData.get("countryValue") as string;
+  const data = await prisma.home.update({
+    where: {
+      id: homeId,
+    },
+    data: {
+      addedLoaction: true,
+      country: countryValue,
+    },
+  });
 
-//   return redirect("/");
-// }
+  return redirect("/");
+}
 
 // export async function addToFavorite(formData: FormData) {
 //   const homeId = formData.get("homeId") as string;
