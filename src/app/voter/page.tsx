@@ -1,13 +1,13 @@
-import TestGeolocation from "@/components/custom/GetUserLocation";
-import ImageOcr from "@/components/custom/ImageOcr";
+"use client"
 import VoterForm from "@/components/custom/VoterForm";
-import React from "react";
+import React, { useState } from "react";
 
 function page() {
+
   return (
     <div>
-      {/* <TestGeolocation /> */}
-      <ImageOcr />
+   
+
       <VoterForm />
     </div>
   );

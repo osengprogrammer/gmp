@@ -6,6 +6,10 @@ import convertor from "@/lib/converter";
 import { ImagePlus } from "lucide-react";
 
 import TextCard from "./TextCard";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import cleanText from "@/lib/cleanOcr";
+import { useString } from "@/providers/textContex";
 
 const ImageUploadPreview: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -13,31 +17,44 @@ const ImageUploadPreview: React.FC = () => {
   const [previewURL, setPreviewURL] = useState<string | null>(null);
   const [texts, setTexts] = useState<Array<string>>([]);
   const [processing, setProcessing] = useState<boolean>(false);
+  const { stringValue, setStringValue } = useString(); 
+
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
       const url = URL.createObjectURL(file);
       setPreviewURL(url);
       setUrlText(url);
+     
     }
   };
 
   const convert = async (url: string) => {
     if (url.length) {
       setProcessing(true);
-      await convertor(url).then((txt: string) => {
-        let copyTexts: Array<string> = texts;
-        copyTexts.push(txt);
-        setTexts(copyTexts);
-      });
-      setProcessing(false);
+      try {
+        const text = await convertor(url); // Destructure the returned object to extract the 'text' property
+        // console.log(text)
+        // cleanText(text)
+        setStringValue(text)
+        setTexts((prevTexts) => [...prevTexts, text]); // Append the new text to the texts array
+    
+      } catch (error) {
+        console.error('Error converting image:', error);
+      } finally {
+        setProcessing(false);
+      }
     }
   };
 
-  const handleProcessImage = () => {
+ 
+  const handleProcessImage = async () => {
     if (urlText) {
-      convert(urlText);
+      await convert(urlText);
+      
+      
     }
   };
 
@@ -81,6 +98,20 @@ const ImageUploadPreview: React.FC = () => {
               </div>
             </div>
           )}
+
+
+      <div className="flex items-center justify-center">
+        {texts && <Link
+          href={{
+            pathname: "/voter",
+          
+          }}
+        >
+       <Button>Continue</Button>
+        </Link>}
+       
+        
+      </div>
         
         </div>
       )}
