@@ -1,15 +1,14 @@
 import SelectMap from "@/components/custom/SelectMap";
 import React from "react";
+import dynamic from 'next/dynamic';
 
-
-
-import 'leaflet/dist/leaflet.css';
 
 function page() {
+  const Map = dynamic(() => import('@/components/custom/SelectMap'), { ssr: false })
 
   return (
     <div >
-        <SelectMap/>
+        <Map/>
       
     </div>
   );

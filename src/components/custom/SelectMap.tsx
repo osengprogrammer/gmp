@@ -22,22 +22,7 @@ const GREEN_ICON = icon({
 function SelectMap() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [coordinat, setCoordinat] = useState<GeolocationCoordinates | null>(
-    null
-  );
-
-  const getCoord = () => {
-    let koordinate = {};
-    if (coordinat) {
-      koordinate = {
-        latitude: coordinat.latitude,
-        longitude: coordinat.longitude,
-      };
-      console.log(koordinate);
-    } else {
-      console.error("Coordinates are not available.");
-    }
-  };
+ 
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -45,7 +30,7 @@ function SelectMap() {
         (position) => {
           setLatitude(position.coords.latitude);
           setLongitude(position.coords.longitude);
-          setCoordinat(position.coords);
+        
         },
         (error) => {
           console.error("Error getting geolocation:", error);
@@ -82,10 +67,8 @@ function SelectMap() {
             // the data
           }}
         >
-          
-       <Button>Continue</Button>
+          <Button>Continue</Button>
         </Link>
-        
       </div>
     </div>
   );
