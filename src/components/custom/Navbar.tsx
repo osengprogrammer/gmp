@@ -7,7 +7,7 @@ import SearchComponent from "./SearchComponent";
 
 function Navbar() {
   return (
-    <div className="w-full border-b border-green-500">
+    <div className="w-full border-b border-green-100">
       <div className="flex items-center justify-between container mx-auto ">
         
         <Link href="/">
