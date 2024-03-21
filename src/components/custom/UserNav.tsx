@@ -31,7 +31,7 @@ export async function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <div className="rounded-sm border px-2 py-2 lg:px-4 lg:py-2 flex items-center gap-x-3">
+        <div className="rounded-sm border px-2 py-2 lg:px-4 lg:py-2 flex items-center gap-x-3 ">
           <MenuIcon className="w-4 h-4 lg:w-5 lg:h-5" />
 
           <img

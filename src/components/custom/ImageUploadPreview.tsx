@@ -1,33 +1,34 @@
 // ImageUploadPreview.tsx
 "use client";
 import Image from "next/image";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useRef, useState } from "react";
 import convertor from "@/lib/converter";
-import { ImagePlus } from "lucide-react";
-
-import TextCard from "./TextCard";
+import { CameraIcon, ImagePlus } from "lucide-react";
 import { Button } from "../ui/button";
-import Link from "next/link";
-import cleanText from "@/lib/cleanOcr";
 import { useString } from "@/providers/textContex";
+import { supabase } from "@/lib/supabase";
+import VoterForm from "./VoterForm";const ImageUploadPreview: React.FC = () => {
+  const [fileImage, setFileImage] = useState<any | null>(null);
 
-const ImageUploadPreview: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [urlText, setUrlText] = useState<string | null>(null);
-  const [previewURL, setPreviewURL] = useState<string | null>(null);
+  const [previewURL, setPreviewURL] = useState<string | "">("");
+  const [downloadURL, setDownloadURL] = useState<string | "">("");
   const [texts, setTexts] = useState<Array<string>>([]);
   const [processing, setProcessing] = useState<boolean>(false);
-  const { stringValue, setStringValue } = useString(); 
+  const [path, setPath] = useState("")
+  const { setStringValue } = useString();
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (file) {
       const url = URL.createObjectURL(file);
       setPreviewURL(url);
       setUrlText(url);
-     
+      setFileImage(file);
+      await convert(url)
+      
     }
   };
 
@@ -36,41 +37,64 @@ const ImageUploadPreview: React.FC = () => {
       setProcessing(true);
       try {
         const text = await convertor(url); // Destructure the returned object to extract the 'text' property
-        // console.log(text)
-        // cleanText(text)
-        setStringValue(text)
+        setStringValue(text);
         setTexts((prevTexts) => [...prevTexts, text]); // Append the new text to the texts array
-    
+        setProcessing(false);
+        
       } catch (error) {
-        console.error('Error converting image:', error);
+        console.error("Error converting image:", error);
       } finally {
         setProcessing(false);
       }
     }
   };
 
- 
-  const handleProcessImage = async () => {
-    if (urlText) {
-      await convert(urlText);
-      
-      
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const uploadKtp = async () => {
+
+    if(fileImage){
+      console.log(fileImage.name)
+      const {data,error} = await supabase.storage
+      .from("images")
+      .upload(`${fileImage.name}-${new Date()}`, fileImage, {
+        cacheControl: "2592000",
+        contentType: "image/png",
+      });
+       
+      if( data){
+        setPath(data.path)
+
+      }
     }
+    
   };
 
   return (
-    <div className="bg-green-50 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold mb-4 text-green-800">
-        Image Upload & Preview
-      </h1>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        className="mb-2 p-2 border border-green-400 rounded-lg"
-      />
-      {previewURL && (
-        <div className=" flex flex-col justify-center items-center">
+    <div className="p-8  flex flex-col items-center">
+      <h1 className="font-bold mb-4 text-green-800">Pilih KTP</h1>
+      <div>
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          onChange={handleImageChange}
+        />
+        <button
+          type="button"
+          className="flex items-center px-2 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 mb-2"
+          onClick={handleButtonClick}
+        >
+          <CameraIcon className="w-5 h-5 mr-2" aria-hidden="true" />
+          Pilih KTP
+        </button>
+      </div>
+
+      <div className=" flex flex-col justify-center items-center">
+        <div>
           <Image
             src={previewURL}
             alt="Preview"
@@ -79,42 +103,23 @@ const ImageUploadPreview: React.FC = () => {
             height={50}
           />
 
-          <button
-            onClick={handleProcessImage}
-            disabled={!urlText}
-            className={`bg-green-500 text-white py-2 px-4 rounded-lg mt-2${
-              !urlText ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            Extract Text
-          </button>
 
-          {urlText && (
-            <div className=" md:bottom-10 w-full bg-green-50 rounded-lg shadow-lg">
-              <div className="flex flex-col gap-10 items-center justify-center p-5 md:p-20">
-                {texts.map((t, i) => (
-                  <TextCard key={i} t={t} i={i} />
-                ))}
-              </div>
-            </div>
-          )}
-
-
-      <div className="flex items-center justify-center">
-        {texts && <Link
-          href={{
-            pathname: "/voter",
+        <Image
+            src={downloadURL}
+            alt="Preview"
+            className="max-w-full h-auto rounded-lg"
+            width={500}
+            height={50}
+          />
+          {fileImage&&<Button onClick={uploadKtp}>Upload</Button> }
           
-          }}
-        >
-       <Button>Continue</Button>
-        </Link>}
-       
-        
-      </div>
-        
+           <VoterForm  downloadURL ={downloadURL}/>
+          
+          
+          
+         
         </div>
-      )}
+      </div>
     </div>
   );
 };

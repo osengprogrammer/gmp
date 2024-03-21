@@ -1,21 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import DesktopLogo from "../../../public/airbnb-desktop.png"
+
 import { UserNav } from "./UserNav";
-import SearchComponent from "./SearchComponent";
+
 
 function Navbar() {
   return (
-    <div className="w-full border-b border-green-100">
-      <div className="flex items-center justify-between container mx-auto ">
+    <div className="w-full border-b border-green-100 flex items-center justify-between mx-auto px-2">
+     
         
         <Link href="/">
-         <h1 className="text-green-800 text-2xl lg:text-4xl">GMP</h1>
+         <h1 className="text-green-800 text-lg lg:text-4xl">GMP</h1>
         </Link>
-        <SearchComponent/>
+  
         <UserNav/>
-      </div>
+   
     </div>
   );
 }

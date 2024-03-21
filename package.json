@@ -34,6 +34,7 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "tesseract.js": "^5.0.4",
+    "uid": "^2.0.2",
     "world-countries": "^5.0.0"
   },
   "devDependencies": {
