@@ -6,8 +6,7 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
-    "build": "prisma generate && next build"
+    "build": "next build"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
@@ -19,8 +18,10 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@supabase/supabase-js": "^2.39.8",
+    "@types/uuid": "^9.0.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "firebase": "^10.9.0",
     "google-map-react": "^2.2.1",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
@@ -35,6 +36,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tesseract.js": "^5.0.4",
     "uid": "^2.0.2",
+    "uuid": "^9.0.1",
     "world-countries": "^5.0.0"
   },
   "devDependencies": {

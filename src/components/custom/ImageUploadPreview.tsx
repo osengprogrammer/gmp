@@ -6,16 +6,20 @@ import convertor from "@/lib/converter";
 import { CameraIcon, ImagePlus } from "lucide-react";
 import { Button } from "../ui/button";
 import { useString } from "@/providers/textContex";
-import { supabase } from "@/lib/supabase";
-import VoterForm from "./VoterForm";const ImageUploadPreview: React.FC = () => {
+import VoterForm from "./VoterForm";
+import { storage } from "@/lib/firebase";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uUid";
+
+const ImageUploadPreview: React.FC = () => {
   const [fileImage, setFileImage] = useState<any | null>(null);
 
   const [urlText, setUrlText] = useState<string | null>(null);
   const [previewURL, setPreviewURL] = useState<string | "">("");
-  const [downloadURL, setDownloadURL] = useState<string | "">("");
+  const [downloadURL1, setDownloadURL] = useState<string | "">("");
   const [texts, setTexts] = useState<Array<string>>([]);
   const [processing, setProcessing] = useState<boolean>(false);
-  const [path, setPath] = useState("")
+  const [path, setPath] = useState("");
   const { setStringValue } = useString();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -27,8 +31,7 @@ import VoterForm from "./VoterForm";const ImageUploadPreview: React.FC = () => {
       setPreviewURL(url);
       setUrlText(url);
       setFileImage(file);
-      await convert(url)
-      
+      await convert(url);
     }
   };
 
@@ -40,7 +43,6 @@ import VoterForm from "./VoterForm";const ImageUploadPreview: React.FC = () => {
         setStringValue(text);
         setTexts((prevTexts) => [...prevTexts, text]); // Append the new text to the texts array
         setProcessing(false);
-        
       } catch (error) {
         console.error("Error converting image:", error);
       } finally {
@@ -54,22 +56,18 @@ import VoterForm from "./VoterForm";const ImageUploadPreview: React.FC = () => {
   };
 
   const uploadKtp = async () => {
+    if (!fileImage) return;
+    const storageRef = await ref(storage, `some-child/${fileImage.name}`);
 
-    if(fileImage){
-      console.log(fileImage.name)
-      const {data,error} = await supabase.storage
-      .from("images")
-      .upload(`${fileImage.name}-${new Date()}`, fileImage, {
-        cacheControl: "2592000",
-        contentType: "image/png",
-      });
-       
-      if( data){
-        setPath(data.path)
+    // 'file' comes from the Blob or File API
+    const snapshot = await uploadBytes(storageRef, fileImage);
 
-      }
-    }
-    
+    console.log("Uploaded a blob or file!");
+
+    // Get the download URL for the uploaded file
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    console.log("Download URL:", downloadURL);
+    setDownloadURL(downloadURL);
   };
 
   return (
@@ -103,21 +101,13 @@ import VoterForm from "./VoterForm";const ImageUploadPreview: React.FC = () => {
             height={50}
           />
 
+          {fileImage && <Button onClick={uploadKtp}>Upload KTP</Button>}
 
-        <Image
-            src={downloadURL}
-            alt="Preview"
-            className="max-w-full h-auto rounded-lg"
-            width={500}
-            height={50}
-          />
-          {fileImage&&<Button onClick={uploadKtp}>Upload</Button> }
+          {downloadURL1&&(
+            <VoterForm downloadURL={downloadURL1} />
+          )}
+
           
-           <VoterForm  downloadURL ={downloadURL}/>
-          
-          
-          
-         
         </div>
       </div>
     </div>

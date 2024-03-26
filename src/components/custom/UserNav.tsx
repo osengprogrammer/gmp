@@ -16,15 +16,13 @@ import {
 
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import Link from "next/link";
-import { createAirbnbHome } from "@/app/actions";
+
 
 export async function UserNav() {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
-  const createHomewithId = createAirbnbHome.bind(null, {
-    userId: user?.id as string,
-  });
+  
 
   // let user
 
@@ -51,7 +49,7 @@ export async function UserNav() {
               <div className="w-full">
                 <Link
                   href={{
-                    pathname: "/selectmap",
+                    pathname: "/selectimage",
                   }}
                 >
                   <button className="w-full text-start">

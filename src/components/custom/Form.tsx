@@ -4,19 +4,13 @@ import Image from "next/image";
 import React, { ChangeEvent, useRef, useState } from "react";
 import convertor from "@/lib/converter";
 import { CameraIcon, ImagePlus } from "lucide-react";
-
-import TextCard from "./TextCard";
 import { Button } from "../ui/button";
-import Link from "next/link";
-
 import { useString } from "@/providers/textContex";
-
-import { supabase } from "@/lib/supabase";
 import VoterForm from "./Form";
+
 
 const ImageUploadPreview: React.FC = () => {
   const [fileImage, setFileImage] = useState<any|null>(null);
-
   const [urlText, setUrlText] = useState<string | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
   const [texts, setTexts] = useState<Array<string>>([]);
@@ -51,25 +45,14 @@ const ImageUploadPreview: React.FC = () => {
     }
   };
 
-  const handleProcessImage = async () => {
-    if (urlText) {
-      await convert(urlText);
-    }
-  };
-
-    const handleButtonClick = () => {
+  const handleButtonClick = () => {
     fileInputRef.current?.click();
   };
 
-  const uploadKtp = async ()=>{
-    
-    await supabase.storage
-    .from("images")
-    .upload(`${fileImage.name}-${new Date()}`, fileImage, {
-      cacheControl: "2592000",
-      contentType: "image/png",
-    });
-  }
+ 
+
+
+ 
   return (
     <div className="p-8  flex flex-col items-center">
       <h1 className="font-bold mb-4 text-green-800">Pilih KTP</h1>
@@ -92,9 +75,10 @@ const ImageUploadPreview: React.FC = () => {
       </button>
       
       </div>
+    
+      <div>
      
-
-     
+      </div>
       <div className=" flex flex-col justify-center items-center">
         {previewURL && (
           <div>
@@ -105,18 +89,11 @@ const ImageUploadPreview: React.FC = () => {
               width={500}
               height={50}
             />
-
+           
             </div>)}
-
+       
           <VoterForm/>
-      {texts.length > 0 && (
-        <div className=" flex flex-col justify-center items-center w-60 space-y-4">
-          <Button onClick={uploadKtp} className=" bg-green-500 w-60"> Upload KTP</Button>
-          <Link href="/voter">
-            <Button className=" bg-green-500 w-60">Continue</Button>
-          </Link>
-        </div>
-      )}
+    
     </div>
     </div>
   );

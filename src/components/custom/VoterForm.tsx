@@ -5,7 +5,9 @@ import { useForm } from "react-hook-form";
 import { useString } from "@/providers/textContex";
 import cleanText from "@/lib/cleanOcr";
 import { Button } from "../ui/button";
-import { createGMP } from "@/lib/actions";
+import { collection, addDoc } from "firebase/firestore"; 
+import { db } from "@/lib/firebase";
+
 type Inputs = {
 
   Nama: string;
@@ -50,9 +52,26 @@ const VoterForm =  ({downloadURL}:any) => {
   } = useForm<Inputs>();
 
   const onSubmit = async (data: Inputs) => {
+    console.log("ok")
     console.log({...data, downloadURL});
     let dataQ = {...data, downloadURL}
-    await createGMP ( dataQ)
+    console.log(dataQ)
+
+    try {
+      const docRef = await addDoc(collection(db, "voters"), {
+        nama: dataQ.Nama,
+        jeniskelamin:dataQ.Gender,
+        usia: dataQ.Usia,
+        desa: dataQ.Desa,
+        rt: dataQ.Rt,
+        rw: dataQ.Rw,
+        url:dataQ.downloadURL
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  
   };
 
   useEffect(() => {
