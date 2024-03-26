@@ -9,7 +9,7 @@ import { useString } from "@/providers/textContex";
 import VoterForm from "./VoterForm";
 import { storage } from "@/lib/firebase";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { v4 } from "uUid";
+// import { v4 } from "uUid";
 
 const ImageUploadPreview: React.FC = () => {
   const [fileImage, setFileImage] = useState<any | null>(null);
